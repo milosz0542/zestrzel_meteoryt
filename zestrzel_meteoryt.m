@@ -2,7 +2,7 @@ function zestrzel_meteoryt()
     %{
     funkcja zestrzel_meteoryt()
     Służy ona do symulacji przechwytu meteorytu, który uderza w naszą sferę
-    chronioną. 
+    chronioną.
     Po wywołaniu funkcji losowane są dane takie jak:
     - współrzędne początkowe meteorytu (x0, y0, z0)
     - kąty nachylenia do ziemii meteorytu (alpha, beta, gamma odpowiednio
@@ -32,7 +32,7 @@ function zestrzel_meteoryt()
 
     % Generowanie losowych danych meteorytu
     disp('=== DANE METEORYTU ===');
-    
+
     % Losowe współrzędne początkowe (w km)
     x0 = (rand() * 400 - 200) * 1000;  % -200km do +200km
     y0 = (rand() * 400 - 200) * 1000;
@@ -115,6 +115,8 @@ function zestrzel_meteoryt()
     % Sprawdzamy, czy uderzenie nastąpi w obrębie koła o promieniu R:
     if dist_ground > R
         disp('Meteoryt uderzy w ziemię poza chronionym obszarem. Jesteśmy bezpieczni.');
+        pause(0.5);
+        zestrzel_meteoryt();
         return;
     else
         disp('UWAGA: Meteoryt uderzy w ziemię w chronionym obszarze!');
@@ -268,23 +270,23 @@ function zestrzel_meteoryt()
 
     % Animacja
     figure('Name','Animacja przechwytu','Color','white');
-    
+
     % Ustawienie odpowiednich granic osi
     x_limits = [min([x_m_vec x_r_vec]) max([x_m_vec x_r_vec])];
     y_limits = [min([y_m_vec y_r_vec]) max([y_m_vec y_r_vec])];
     z_limits = [0 max([z_m_vec z_r_vec])];
-    
+
     % Rysowanie tła
     plot3(x_m_vec, y_m_vec, z_m_vec, 'r:','LineWidth',1);
     hold on;
     plot3(x_r_vec, y_r_vec, z_r_vec, 'b:','LineWidth',1);
     plot3(x_m_intercept, y_m_intercept, z_min, 'ko','MarkerSize',8,'MarkerFaceColor','g');
     plot3(x_ground, y_ground, 0, 'ko','MarkerSize',8,'MarkerFaceColor','r');
-    
+
     % Inicjalizacja obiektów animacji
     h_meteor = plot3(x_m_vec(1), y_m_vec(1), z_m_vec(1), 'ro', 'MarkerSize', 10, 'MarkerFaceColor', 'r', 'DisplayName', 'Meteoryt');
     h_rocket = plot3(x_r_vec(1), y_r_vec(1), z_r_vec(1), 'bo', 'MarkerSize', 10, 'MarkerFaceColor', 'b', 'DisplayName', 'Rakieta');
-    
+
     % Konfiguracja wykresu
     xlabel('x [m]'); ylabel('y [m]'); zlabel('z [m]');
     grid on;
@@ -292,7 +294,7 @@ function zestrzel_meteoryt()
     title('Animacja przechwytu');
     legend('Location','best');
     view(45, 30); % Ustawienie perspektywy 3D
-    
+
     % Animacja
     try
         for i = 1:N
@@ -305,10 +307,10 @@ function zestrzel_meteoryt()
             % Aktualizacja pozycji
             set(h_meteor, 'XData', x_m_vec(i), 'YData', y_m_vec(i), 'ZData', z_m_vec(i));
             set(h_rocket, 'XData', x_r_vec(i), 'YData', y_r_vec(i), 'ZData', z_r_vec(i));
-            
+
             % Obliczenie odległości między rakietą a meteorytem
             distance = sqrt((x_m_vec(i) - x_r_vec(i))^2 + (y_m_vec(i) - y_r_vec(i))^2 + (z_m_vec(i) - z_r_vec(i))^2);
-            
+
             % Sprawdzenie przechwytu
             if distance < 10
                 disp('Przechwycenie meteorytu!');
@@ -318,17 +320,17 @@ function zestrzel_meteoryt()
                 drawnow;
                 break;
             end
-            
+
             % Aktualizacja wykresu
             drawnow;
             pause(0.05);
         end
-        
+
         % Dodaj komunikat sukcesu
         text(0.5, 0.5, 0.5, 'PRZECHWYT ZAKOŃCZONY SUKCESEM!', ...
             'Units', 'normalized', 'HorizontalAlignment', 'center', ...
             'FontSize', 14, 'FontWeight', 'bold', 'Color', 'g');
-        
+
     catch ME
         if strcmp(ME.identifier, 'MATLAB:class:InvalidHandle')
             disp('Okno animacji zostało zamknięte.');
